@@ -13,16 +13,19 @@ class AccountModel {
   final int? id;
   final String name;
   final AccountType type;
+  final int color;
 
   const AccountModel({
     this.id,
     required this.name,
     required this.type,
+    required this.color,
   });
 
   AccountModel.fromMap(Map<String, dynamic> map)
       : id = map['id'],
         name = map['name'],
+        color = map['color'],
         type = AccountType.values.byName(map['type']);
 
   Map<String, dynamic> toMap() {
@@ -30,6 +33,7 @@ class AccountModel {
       'id': id,
       'name': name,
       'type': type.name,
+      'color': color,
     };
   }
 }

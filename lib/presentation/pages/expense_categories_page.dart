@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/presentation/pages/account_form_page.dart';
+import 'package:frontend/presentation/pages/expense_category_form_page.dart';
 import 'package:frontend/presentation/widgets/main_drawer.dart';
 import 'package:frontend/domain/transactions.dart';
 import 'package:provider/provider.dart';
 
-class AccountsPage extends StatefulWidget {
-  const AccountsPage({super.key});
+class ExpenseCategoriesPage extends StatefulWidget {
+  const ExpenseCategoriesPage({super.key});
 
   @override
-  State<AccountsPage> createState() => AccountsPageState();
+  State<ExpenseCategoriesPage> createState() => ExpenseCategoriesPageState();
 }
 
-class AccountsPageState extends State<AccountsPage> {
+class ExpenseCategoriesPageState extends State<ExpenseCategoriesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Accounts'),
+        title: const Text('Expense categories'),
       ),
       drawer: const MainDrawer(),
       body: Center(
@@ -26,13 +26,13 @@ class AccountsPageState extends State<AccountsPage> {
               builder: (context, ctrl, child) => ListView.builder(
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
-                itemCount: ctrl.monetaryAssetAccounts.length,
+                itemCount: ctrl.expenseAccounts.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Center(
                     child: ListTile(
-                      tileColor: Color(ctrl.monetaryAssetAccounts[index].color),
-                      leading: Text(ctrl.monetaryAssetAccounts[index].balance.toString()),
-                      title: Text(ctrl.monetaryAssetAccounts[index].name)),
+                      tileColor: Color(ctrl.expenseAccounts[index].color),
+                      leading: Text(ctrl.expenseAccounts[index].balance.toString()),
+                      title: Text(ctrl.expenseAccounts[index].name)),
                   );
                 }
               ),
@@ -44,7 +44,7 @@ class AccountsPageState extends State<AccountsPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AccountFormPage()),
+            MaterialPageRoute(builder: (context) => const ExpenseCategoryFormPage()),
           );
         },
         child: const Icon(Icons.add),

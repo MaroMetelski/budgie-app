@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:frontend/domain/transactions.dart';
 import 'dart:math' as math;
 
-class AccountFormPage extends StatefulWidget {
-  const AccountFormPage({super.key});
+class ExpenseCategoryFormPage extends StatefulWidget {
+  const ExpenseCategoryFormPage({super.key});
 
   @override
-  State<AccountFormPage> createState() => _AccountFormPageState();
+  State<ExpenseCategoryFormPage> createState() => _ExpenseCategoryFormPageState();
 }
 
-class _AccountFormPageState extends State<AccountFormPage> {
+class _ExpenseCategoryFormPageState extends State<ExpenseCategoryFormPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
 
@@ -17,7 +17,7 @@ class _AccountFormPageState extends State<AccountFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add account'),
+        title: const Text('Add expense category'),
       ),
       body: Form(
         key: _formKey,
@@ -38,9 +38,9 @@ class _AccountFormPageState extends State<AccountFormPage> {
                   String name = _nameController.text;
                   var genColorId = math.Random().nextInt(Colors.primaries.length);
                   Color color = Colors.primaries[genColorId];
-                  TransactionController.instance.addMonetaryAssetAccount(name, color.value);
+                  TransactionController.instance.addExpenseAccount(name, color.value);
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text('Account added'),
+                    content: Text('Expense category added'),
                     duration: Duration(seconds: 1),
                   ));
                   Navigator.pop(context);

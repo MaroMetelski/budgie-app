@@ -17,7 +17,7 @@ class DatabaseHelper {
   Future<Database> _initDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, 'budgee.db');
-    // deleteDatabase(path);
+    deleteDatabase(path);
     return await openDatabase(
       path,
       version: 1,
@@ -35,6 +35,7 @@ class DatabaseHelper {
       CREATE TABLE IF NOT EXISTS account(
         id INTEGER PRIMARY KEY,
         name TEXT UNIQUE NOT NULL CHECK( LENGTH(name) <= 100 ),
+        color INTEGER NOT NULL,
         type TEXT NOT NULL
       )''');
     await db.execute('''CREATE TABLE IF NOT EXISTS _transaction(

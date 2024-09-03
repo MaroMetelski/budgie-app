@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/foundation.dart';
 import 'package:frontend/data/database.dart';
 import 'package:frontend/data/models/account_model.dart';
@@ -9,6 +11,7 @@ class Account {
   final int id;
   final AccountType type;
   final String name;
+  final int color;
   num credit;
   num debit;
 
@@ -16,6 +19,7 @@ class Account {
       {required this.id,
       required this.name,
       required this.type,
+      required this.color,
       this.credit = 0,
       this.debit = 0});
 
@@ -78,27 +82,28 @@ class TransactionController extends ChangeNotifier {
           id: acc.id!,
           type: acc.type,
           name: acc.name,
+          color: acc.color,
           credit: credit,
           debit: debit));
     }
     notifyListeners();
   }
 
-  Future<int> addMonetaryAssetAccount(String name) async {
+  Future<int> addMonetaryAssetAccount(String name, int color) async {
     AccountModel model =
-        AccountModel(name: name, type: AccountType.monetaryAsset);
+        AccountModel(name: name, type: AccountType.monetaryAsset, color: color);
     int id = await database.addAccount(model);
     Account account =
-        Account(id: id, name: name, type: AccountType.monetaryAsset);
+        Account(id: id, name: name, type: AccountType.monetaryAsset, color: color);
     _accounts.add(account);
     notifyListeners();
     return id;
   }
 
-  Future<int> addExpenseAccount(String name) async {
-    AccountModel model = AccountModel(name: name, type: AccountType.expense);
+  Future<int> addExpenseAccount(String name, int color) async {
+    AccountModel model = AccountModel(name: name, type: AccountType.expense, color: color);
     int id = await database.addAccount(model);
-    Account account = Account(id: id, name: name, type: AccountType.expense);
+    Account account = Account(id: id, name: name, type: AccountType.expense, color: color);
     _accounts.add(account);
     notifyListeners();
     return id;

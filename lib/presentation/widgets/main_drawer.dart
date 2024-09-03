@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/presentation/pages/accounts_page.dart';
 import 'package:frontend/presentation/pages/transactions_page.dart';
+import 'package:frontend/presentation/pages/expense_categories_page.dart';
 
 class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key});
@@ -30,6 +31,10 @@ class MainDrawer extends StatelessWidget {
       ListTile(
         title: const Text('Expenses'),
         onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ExpenseCategoriesPage()),
+          );
         }),
     ]));
   }
