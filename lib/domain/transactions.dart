@@ -48,9 +48,11 @@ class TransactionController extends ChangeNotifier {
   TransactionController._privateConstructor() {
     loadAll();
   }
-  static final TransactionController instance = TransactionController._privateConstructor();
+  static final TransactionController instance =
+      TransactionController._privateConstructor();
 
   final List<Account> _accounts = [];
+  final List<Expense> _expenses = [];
   final DatabaseHelper database = DatabaseHelper.instance;
 
   List<Account> get monetaryAssetAccounts {
@@ -93,18 +95,42 @@ class TransactionController extends ChangeNotifier {
     AccountModel model =
         AccountModel(name: name, type: AccountType.monetaryAsset, color: color);
     int id = await database.addAccount(model);
-    Account account =
-        Account(id: id, name: name, type: AccountType.monetaryAsset, color: color);
+    Account account = Account(
+        id: id, name: name, type: AccountType.monetaryAsset, color: color);
     _accounts.add(account);
     notifyListeners();
     return id;
   }
 
   Future<int> addExpenseAccount(String name, int color) async {
-    AccountModel model = AccountModel(name: name, type: AccountType.expense, color: color);
+    AccountModel model =
+        AccountModel(name: name, type: AccountType.expense, color: color);
     int id = await database.addAccount(model);
-    Account account = Account(id: id, name: name, type: AccountType.expense, color: color);
+    Account account =
+        Account(id: id, name: name, type: AccountType.expense, color: color);
     _accounts.add(account);
+    notifyListeners();
+    return id;
+  }
+
+  Future<int> addExpense(
+      num amount, Account from, Account to, String description) async {
+    TransactionModel model = TransactionModel(
+        dateTime: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        accountFromId: from.id,
+        accountToId: to.id,
+        description: description,
+        amount: amount);
+    int id = await database.addTransaction(model);
+    Expense expense =
+      Expense(id: id, from: from, to: to, amount: amount, description: description);
+    _expenses.add(expense);
+    // update runtime balances.
+    int idxFrom = _accounts.indexWhere((element) => element.id == from.id);
+    int idxTo = _accounts.indexWhere((element) => element.id == to.id);
+    print("from: $idxFrom to: $idxTo");
+    _accounts[idxFrom].credit = amount;
+    _accounts[idxTo].debit = amount;
     notifyListeners();
     return id;
   }

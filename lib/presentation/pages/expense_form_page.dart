@@ -2,15 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:frontend/data/database.dart';
 import 'package:frontend/data/models/transaction_model.dart';
-
-enum CategoryLabel {
-  groceries('Groceries', Colors.blue),
-  rent('Rent', Colors.amber);
-
-  const CategoryLabel(this.label, this.color);
-  final String label;
-  final Color color;
-}
+import 'package:frontend/domain/transactions.dart';
+import 'package:provider/provider.dart';
 
 class ExpenseFormPage extends StatefulWidget {
   const ExpenseFormPage({super.key});
@@ -21,9 +14,11 @@ class ExpenseFormPage extends StatefulWidget {
 
 class _ExpenseFormPageState extends State<ExpenseFormPage> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _accountController = TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
   final CurrencyTextInputFormatter _formatter = CurrencyTextInputFormatter();
-  CategoryLabel? selectedCategory;
+  Account? selectedAccountFrom;
+  Account? selectedAccountTo;
 
   @override
   Widget build(BuildContext context) {
@@ -49,48 +44,77 @@ class _ExpenseFormPageState extends State<ExpenseFormPage> {
                 ),
               ],
             ),
-            DropdownMenu<CategoryLabel>(
-              initialSelection: CategoryLabel.groceries,
-              controller: _categoryController,
-              requestFocusOnTap: true,
-              label: const Text('Category'),
-              onSelected: (CategoryLabel? category) {
-                setState(() => selectedCategory = category);
-              },
-              dropdownMenuEntries: CategoryLabel.values
-                  .map<DropdownMenuEntry<CategoryLabel>>(
-                      (CategoryLabel category) {
-                return DropdownMenuEntry<CategoryLabel>(
-                  value: category,
-                  label: category.label,
-                  enabled: true,
-                  style: MenuItemButton.styleFrom(
-                    foregroundColor: category.color,
+            Consumer<TransactionController>(builder: (context, ctrl, child) {
+              return Row(
+                children: [
+                  Expanded(
+                    child: DropdownMenu<Account>(
+                      initialSelection: ctrl.monetaryAssetAccounts.isNotEmpty
+                          ? ctrl.monetaryAssetAccounts[0]
+                          : null,
+                      controller: _accountController,
+                      requestFocusOnTap: true,
+                      label: const Text('Account'),
+                      onSelected: (Account? account) {
+                        setState(() => selectedAccountFrom = account);
+                      },
+                      dropdownMenuEntries: ctrl.monetaryAssetAccounts
+                          .map<DropdownMenuEntry<Account>>((Account account) {
+                        return DropdownMenuEntry<Account>(
+                          value: account,
+                          label: account.name,
+                          enabled: true,
+                          style: MenuItemButton.styleFrom(
+                            foregroundColor: Color(account.color),
+                          ),
+                        );
+                      }).toList(),
+                    ),
                   ),
-                );
-              }).toList(),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  num amount = _formatter.getUnformattedValue();
-                  TransactionModel transaction = TransactionModel(
-                    dateTime: DateTime.now().millisecondsSinceEpoch,
-                    accountFromId: 1,
-                    accountToId: 2,
-                    amount: amount,
-                    description: 'hello this is me, new transaction',
-                  );
-                  DatabaseHelper.instance.addTransaction(transaction);
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text('Transaction added'),
-                    duration: Duration(seconds: 1),
-                  ));
-                  Navigator.pop(context, true);
-                }
-              },
-              child: const Text('Submit'),
-            )
+                  Expanded(
+                    child: DropdownMenu<Account>(
+                      initialSelection: ctrl.expenseAccounts.isNotEmpty
+                          ? ctrl.expenseAccounts[0]
+                          : null,
+                      controller: _categoryController,
+                      requestFocusOnTap: true,
+                      label: const Text('Account'),
+                      onSelected: (Account? account) {
+                        setState(() => selectedAccountTo = account);
+                      },
+                      dropdownMenuEntries: ctrl.expenseAccounts
+                          .map<DropdownMenuEntry<Account>>((Account account) {
+                        return DropdownMenuEntry<Account>(
+                          value: account,
+                          label: account.name,
+                          enabled: true,
+                          style: MenuItemButton.styleFrom(
+                            foregroundColor: Color(account.color),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              );
+            }),
+            Consumer<TransactionController>(builder: (context, ctrl, child) {
+              return ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    num amount = _formatter.getUnformattedValue();
+                    ctrl.addExpense(amount, selectedAccountFrom!,
+                        selectedAccountTo!, "Description of the transaction...");
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text('Transaction added'),
+                      duration: Duration(seconds: 1),
+                    ));
+                    Navigator.pop(context, true);
+                  }
+                },
+                child: const Text('Submit'),
+              );
+            }),
           ],
         ),
       ),

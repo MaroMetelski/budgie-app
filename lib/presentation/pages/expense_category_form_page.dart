@@ -6,7 +6,8 @@ class ExpenseCategoryFormPage extends StatefulWidget {
   const ExpenseCategoryFormPage({super.key});
 
   @override
-  State<ExpenseCategoryFormPage> createState() => _ExpenseCategoryFormPageState();
+  State<ExpenseCategoryFormPage> createState() =>
+      _ExpenseCategoryFormPageState();
 }
 
 class _ExpenseCategoryFormPageState extends State<ExpenseCategoryFormPage> {
@@ -36,9 +37,11 @@ class _ExpenseCategoryFormPageState extends State<ExpenseCategoryFormPage> {
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   String name = _nameController.text;
-                  var genColorId = math.Random().nextInt(Colors.primaries.length);
+                  var genColorId =
+                      math.Random().nextInt(Colors.primaries.length);
                   Color color = Colors.primaries[genColorId];
-                  TransactionController.instance.addExpenseAccount(name, color.value);
+                  TransactionController.instance
+                      .addExpenseAccount(name, color.value);
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     content: Text('Expense category added'),
                     duration: Duration(seconds: 1),
