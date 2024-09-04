@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/presentation/pages/expense_form_page.dart';
 import 'package:frontend/presentation/widgets/main_drawer.dart';
-import 'package:frontend/data/database.dart';
-import 'package:frontend/data/models/transaction_model.dart';
+import 'package:frontend/domain/transactions.dart';
 
 class TransactionsPage extends StatefulWidget {
   const TransactionsPage({super.key});
@@ -23,9 +22,9 @@ class TransactionsPageState extends State<TransactionsPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            FutureBuilder<List<TransactionModel>>(
-              future: DatabaseHelper.instance.getTransactions(null),
-              builder: (BuildContext context, AsyncSnapshot<List<TransactionModel>> snapshot) {
+            FutureBuilder<List<Transaction>>(
+              future: TransactionController.instance.getAllTransactions(),
+              builder: (BuildContext context, AsyncSnapshot<List<Transaction>> snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(child: Text('Loading...'));
                 }

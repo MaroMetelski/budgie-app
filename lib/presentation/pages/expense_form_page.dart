@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
-import 'package:frontend/data/database.dart';
-import 'package:frontend/data/models/transaction_model.dart';
 import 'package:frontend/domain/transactions.dart';
 import 'package:provider/provider.dart';
 
